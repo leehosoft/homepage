@@ -120,17 +120,24 @@ class StockAnalyzer:
             #     return df, results
             # return None, None
         
-                    # 최근 매수 시그널 필터링 로직
-            if self.show_recent_only:
-                if self.has_recent_signal():
-                    return df, results
-                return None, None
+            #         # 최근 매수 시그널 필터링 로직
+            # if self.show_recent_only:
+            #     if self.has_recent_signal():
+            #         return df, results
+            #     return None, None
             
-            # 기존 필터링 로직
-            if self.show_all or results['전체_매수_시그널'] > 0:
-                return df, results
+            # # 기존 필터링 로직
+            # if self.show_all or results['전체_매수_시그널'] > 0:
+            #     return df, results
+            
+            # 최근 매수 시그널 필터링
+            if self.show_recent_only:
+                if not self.has_recent_signal():
+                    return None, None
+            elif not self.show_all and results['전체_매수_시그널'] == 0:
+                return None, None            
                 
-            return None, None            
+            return df, results            
 
         except Exception as e:
             print(f"종목 분석 중 오류 발생: {str(e)}")
