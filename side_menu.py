@@ -94,7 +94,7 @@ class SideMenu:
         """)
 
     def show_analysis1(self):
-        self.clear_page()
+        # self.clear_page()
         st.title("기술적 분석 시스템(테스트용)")
         st.write("""
         ### 분석 방법
