@@ -31,14 +31,14 @@ class SideMenu:
 
             return selected_menu, None
 
-    def clear_page(self):
-        for key in st.session_state.keys():
-            if key not in ['current_menu', 'main_menu']:
-            # if key not in ['current_menu', 'main_menu', 'sub_menu']:
-                del st.session_state[key]
+    # def clear_page(self):
+    #     for key in st.session_state.keys():
+    #         if key not in ['current_menu', 'main_menu']:
+    #         # if key not in ['current_menu', 'main_menu', 'sub_menu']:
+    #             del st.session_state[key]
 
     def show_home(self):
-        self.clear_page()
+        # self.clear_page()
         st.title("이호소프트 AI 시스템")
         
         # 회사 소개 섹션
@@ -104,7 +104,7 @@ class SideMenu:
         """)
 
     def show_analysis2(self):
-        self.clear_page()
+        # self.clear_page()
         st.title("펀더멘탈 분석")
         st.write("""
         ### 준비중입니다
@@ -114,7 +114,7 @@ class SideMenu:
         """)
 
     def show_analysis3(self):
-        self.clear_page()
+        # self.clear_page()
         st.title("포트폴리오 분석")
         st.write("""
         ### 준비중입니다
