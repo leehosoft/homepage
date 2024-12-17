@@ -9,7 +9,7 @@ from stock_analyzer import StockAnalyzer
 from side_menu import SideMenu
 
 def main():
-    st.set_page_config(page_title="주식 분석 시스템", layout="wide")
+    st.set_page_config(page_title="이호소프트 AI 시스템", layout="wide")
 
     side_menu = SideMenu()
     selected_menu, sub_menu = side_menu.show_menu()
@@ -17,7 +17,7 @@ def main():
     if selected_menu == "Home":
         side_menu.show_home()
     elif selected_menu == "주식분석시스템":
-        if sub_menu == "증권분석1":
+        if sub_menu == "증권분석(test)":
             show_stock_analysis()
         elif sub_menu == "증권분석2":
             side_menu.show_analysis2()

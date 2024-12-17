@@ -7,7 +7,7 @@ class SideMenu:
         self.menu_items = {
             "Home": self.show_home,
             "주식분석시스템": {
-                "증권분석1": self.show_analysis1,
+                "증권분석(test)": self.show_analysis1,
                 "증권분석2": self.show_analysis2,
                 "증권분석3": self.show_analysis3
             }
