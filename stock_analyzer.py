@@ -134,8 +134,9 @@ class StockAnalyzer:
             if self.show_recent_only:
                 if not self.has_recent_signal():
                     return None, None
-            elif not self.show_all and results['전체_매수_시그널'] == 0:
-                return None, None            
+            else:
+                if not self.show_all and results['전체_매수_시그널'] == 0:
+                    return None, None          
                 
             return df, results            
 
