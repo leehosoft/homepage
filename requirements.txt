@@ -4,3 +4,4 @@ streamlit_option_menu==0.3.12
 streamlit-on-Hover-tabs==1.0.1
 pykrx
 plotly
+ta
