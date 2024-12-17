@@ -21,9 +21,9 @@ class SideMenu:
             st.title("메뉴")
             selected_menu = st.radio("메인 메뉴", list(self.menu_items.keys()),key="main_menu")
             
-            if selected_menu != st.session_state.current_menu:
-                st.session_state.current_menu = selected_menu
-                st.rerun()            
+            # if selected_menu != st.session_state.current_menu:
+            #     st.session_state.current_menu = selected_menu
+            #     st.rerun()            
 
             if selected_menu == "주식분석시스템":
                 sub_menu = st.radio("서브 메뉴", list(self.menu_items["주식분석시스템"].keys()),key="sub_menu")
