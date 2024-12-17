@@ -4,6 +4,9 @@ import streamlit as st
 
 class SideMenu:
     def __init__(self):
+        if 'current_menu' not in st.session_state:
+            st.session_state.current_menu = "Home"
+                    
         self.menu_items = {
             "Home": self.show_home,
             "주식분석시스템": {
@@ -16,15 +19,25 @@ class SideMenu:
     def show_menu(self):
         with st.sidebar:
             st.title("메뉴")
-            selected_menu = st.radio("메인 메뉴", list(self.menu_items.keys()))
+            selected_menu = st.radio("메인 메뉴", list(self.menu_items.keys()),key="main_menu")
+            
+            if selected_menu != st.session_state.current_menu:
+                st.session_state.current_menu = selected_menu
+                st.rerun()            
 
             if selected_menu == "주식분석시스템":
-                sub_menu = st.radio("서브 메뉴", list(self.menu_items["주식분석시스템"].keys()))
+                sub_menu = st.radio("서브 메뉴", list(self.menu_items["주식분석시스템"].keys()),key="sub_menu")
                 return selected_menu, sub_menu
 
             return selected_menu, None
 
+    def clear_page(self):
+        for key in st.session_state.keys():
+            if key not in ['current_menu', 'main_menu', 'sub_menu']:
+                del st.session_state[key]
+
     def show_home(self):
+        self.clear_page()
         st.title("이호소프트 AI 시스템")
         
         # 회사 소개 섹션
@@ -80,6 +93,7 @@ class SideMenu:
         """)
 
     def show_analysis1(self):
+        self.clear_page()
         st.title("기술적 분석 시스템(테스트용)")
         st.write("""
         ### 분석 방법
@@ -89,6 +103,7 @@ class SideMenu:
         """)
 
     def show_analysis2(self):
+        self.clear_page()
         st.title("펀더멘탈 분석")
         st.write("""
         ### 준비중입니다
@@ -98,6 +113,7 @@ class SideMenu:
         """)
 
     def show_analysis3(self):
+        self.clear_page()
         st.title("포트폴리오 분석")
         st.write("""
         ### 준비중입니다
