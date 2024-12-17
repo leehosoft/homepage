@@ -26,7 +26,7 @@ def main():
 
 
 # app.py
-@st.cache_data
+# @st.cache_data
 def show_stock_analysis():
     st.title("주식 기술적 분석")
 

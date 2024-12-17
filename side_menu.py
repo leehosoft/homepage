@@ -33,7 +33,8 @@ class SideMenu:
 
     def clear_page(self):
         for key in st.session_state.keys():
-            if key not in ['current_menu', 'main_menu', 'sub_menu']:
+            if key not in ['current_menu', 'main_menu']:
+            # if key not in ['current_menu', 'main_menu', 'sub_menu']:
                 del st.session_state[key]
 
     def show_home(self):
