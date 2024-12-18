@@ -12,11 +12,15 @@ class StockAnalyzer:
         self.df = None
         self.show_all = False
         self.show_recent_only = False
+        self.signal_verify_days = 3
+        self.market_cap_filter = (0, 100000000) 
 
-    def set_display_option(self, show_all, show_recent_only):
+    def set_display_option(self, show_all, show_recent_only, market_cap_filter, signal_verify_days):
         """디스플레이 옵션 설정"""
         self.show_all = show_all
         self.show_recent_only = show_recent_only
+        self.market_cap_filter = market_cap_filter
+        self.signal_verify_days = signal_verify_days
 
     # @st.cache_data(ttl=3600)  # 1시간 캐시
     def get_stock_data(self, ticker, start_date, end_date):
@@ -91,7 +95,7 @@ class StockAnalyzer:
         except Exception:
             return False
 
-    def analyze_stock(self, ticker, start_date, end_date):
+    def analyze_stock(self, ticker, start_date, end_date, market_cap_filter):
         """종목 분석 통합 함수"""
         try:
             df = self.get_stock_data(ticker, start_date, end_date)
@@ -101,20 +105,44 @@ class StockAnalyzer:
             self.calculate_technical_indicators()
             self.generate_signals()
             results = self.analyze_performance()
+            capbool = self.filter_by_market_cap(ticker, market_cap_filter, end_date)
             
+            if(not capbool):
+                return None, None  
+                        
             # 최근 매수 시그널 필터링
             if self.show_recent_only:
                 if not self.has_recent_signal():
                     return None, None
             else:
                 if not self.show_all and results['전체_매수_시그널'] == 0:
-                    return None, None          
+                    return None, None                                                       
                 
             return df, results            
 
         except Exception as e:
             print(f"종목 분석 중 오류 발생: {str(e)}")
             return None, None
+        
+    def filter_by_market_cap(self, ticker, market_cap_filter, end_date):
+        """시가총액 필터링"""
+        try:
+            # cap_df = stock.get_market_cap(self.end_date)
+            # if ticker in cap_df.index:
+            #     market_cap = cap_df.loc[ticker, '시가총액'] / 100000000  # 억원 단위
+            #     return self.market_cap_filter[0] <= market_cap <= self.market_cap_filter[1]
+            # return False
+        
+            cap_end = datetime.strptime(end_date, '%Y%m%d')
+            cap_start = cap_end - timedelta(days=10)
+            df1 = stock.get_market_cap_by_date(cap_start.strftime('%Y%m%d'), 
+                                                end_date, 
+                                                ticker)
+            sigatot = df1.iloc[-1]['시가총액']/100000000 
+            return self.market_cap_filter[0] <= sigatot <= self.market_cap_filter[1]
+
+        except Exception:
+            return False        
 
     def analyze_performance(self):
         """매매 성과 분석"""
@@ -129,11 +157,11 @@ class StockAnalyzer:
 
             for signal_date in signals:
                 idx = self.df.index.get_loc(signal_date)
-                if idx + 3 >= len(self.df):
+                if idx + self.signal_verify_days >= len(self.df):
                     continue
 
                 entry_price = self.df.iloc[idx]['종가']
-                future_prices = self.df.iloc[idx+1:idx+4]['종가']
+                future_prices = self.df.iloc[idx+1:idx+(self.signal_verify_days + 1)]['종가']
                 max_price = future_prices.max()
 
                 profit = ((max_price - entry_price) / entry_price) * 100
@@ -162,7 +190,7 @@ class StockAnalyzer:
                 '최대_수익률': 0,
                 '평균_손실률': 0,
                 '최대_손실률': 0,
-                '3일후_평균_수익률': 0
+                f'{self.signal_verify_days}일후_평균_수익률': 0
             }
 
         수익률_array = np.array(results['수익률_리스트'])
@@ -178,7 +206,7 @@ class StockAnalyzer:
             '최대_수익률': np.max(수익률_array) if len(수익률_array) > 0 else 0,
             '평균_손실률': np.mean(음수_수익률) if len(음수_수익률) > 0 else 0,
             '최대_손실률': np.min(수익률_array) if len(수익률_array) > 0 else 0,
-            '3일후_평균_수익률': np.mean(수익률_array)
+            f'{self.signal_verify_days}일후_평균_수익률': np.mean(수익률_array)
         }
 
     # @st.cache_data
@@ -218,18 +246,18 @@ class StockAnalyzer:
             ))
 
             # 매수 시그널 표시
-            buy_signals = self.df[self.df['Signal'] == 1]
+            buy_signals = self.df[self.df['Signal'] == 1]            
 
             if not buy_signals.empty:
                 # 성공/실패 시그널 구분
                 success_signals = buy_signals[buy_signals.index.map(
-                    lambda x: self.df.loc[x:].iloc[1:4]['종가'].max() > self.df.loc[x]['종가']
-                    if x < self.df.index[-3] else False
+                    lambda x: self.df.loc[x:].iloc[1:self.signal_verify_days + 1]['종가'].max() > self.df.loc[x]['종가']
+                    if x < self.df.index[self.signal_verify_days * -1] else False
                 )]
 
                 failed_signals = buy_signals[buy_signals.index.map(
-                    lambda x: self.df.loc[x:].iloc[1:4]['종가'].max() <= self.df.loc[x]['종가']
-                    if x < self.df.index[-3] else False
+                    lambda x: self.df.loc[x:].iloc[1:self.signal_verify_days + 1]['종가'].max() <= self.df.loc[x]['종가']
+                    if x < self.df.index[self.signal_verify_days * -1] else False
                 )]
 
                 # 성공 시그널 표시

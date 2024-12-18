@@ -118,7 +118,7 @@ class StockDisplay:
     def create_placeholders(self, selected_stocks):
         self.result_placeholders = {stock: st.empty() for stock in selected_stocks}
 
-    def display_stock_result(self, selected_stock, analyzer, results):
+    def display_stock_result(self, selected_stock, analyzer, results, verify_days):
         if selected_stock not in self.result_placeholders:
             self.result_placeholders[selected_stock] = st.empty()
 
@@ -135,16 +135,16 @@ class StockDisplay:
                 with chart_col:
                     st.plotly_chart(analyzer.plot_stock_chart(), use_container_width=True)
                 with metrics_col:
-                    self.display_metrics(results)
+                    self.display_metrics(results, verify_days)
 
-    def display_metrics(self, results):
+    def display_metrics(self, results, verify_days):
         col1, col2 = st.columns(2)
         with col1:
             st.metric("성공률", f"{results['성공률']:.2f}%")
             st.metric("평균 수익률", f"{results['평균_수익률']:.2f}%")
         with col2:
             st.metric("최대 수익률", f"{results['최대_수익률']:.2f}%")
-            st.metric("3일후 평균 수익률", f"{results['3일후_평균_수익률']:.2f}%")
+            st.metric(f"{verify_days}일후 평균 수익률", f"{results[f'{verify_days}일후_평균_수익률']:.2f}%")
 
         st.write("### 상세 분석 결과")
         st.write(f"전체 매수 시그널: {results['전체_매수_시그널']}")

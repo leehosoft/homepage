@@ -13,6 +13,9 @@ class StockSelector:
         self.show_all = None
         self.show_recent_only = None
         self.selected_stocks = None
+        
+        self.market_cap_filter = None  # 시가총액 필터 추가
+        self.signal_verify_days = None  # 매수시그널 검증일수 추가        
 
     def get_all_stock_codes(self):
         """코스피와 코스닥의 모든 종목 코드와 이름을 가져오는 함수"""
@@ -32,7 +35,8 @@ class StockSelector:
 
     def show_selector(self):
         # 날짜 선택
-        col1, col2, col3 = st.columns(3)
+        # col1, col2, col3 = st.columns(3)
+        col1, col2, col3, col4 = st.columns(4)
         with col1:
             # 시장 선택 및 종목 필터링
             self.market_filter = st.radio(
@@ -55,6 +59,25 @@ class StockSelector:
                 "종료일",
                 datetime.now()
             ).strftime("%Y%m%d")
+            
+        # 분석 옵션 설정
+        col1, col2 = st.columns(2)            
+        with col1:   
+            # 시가총액 필터 추가
+            self.market_cap_filter = st.select_slider(
+                "시가총액 필터 (억원)",
+                options=[0, 1000, 5000, 10000, 50000, 100000, 500000, 100000000],
+                value=(0, 100000000)
+            ) 
+        with col2:    
+            # 매수시그널 검증일수 추가
+            self.signal_verify_days = st.number_input(
+                "매수시그널 검증일수",
+                min_value=1,
+                max_value=20,
+                value=3,
+                help="매수시그널 발생 후 수익률을 계산할 기간"
+            )            
 
         # 분석 옵션 설정
         col1, col2 = st.columns(2)
@@ -77,7 +100,9 @@ class StockSelector:
             'end_date': self.end_date,
             'show_all': self.show_all,
             'show_recent_only': self.show_recent_only,
-            'selected_stocks': self.selected_stocks
+            'selected_stocks': self.selected_stocks,
+            'market_cap_filter': self.market_cap_filter,  # 시가총액 필터 추가
+            'signal_verify_days': self.signal_verify_days  # 검증일수 추가            
         }
 
 

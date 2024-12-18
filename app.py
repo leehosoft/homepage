@@ -59,7 +59,7 @@ def show_stock_analysis():
             if st.session_state.analysis_results:
                 for stock in st.session_state.analysis_results:
                     analyzer, results = st.session_state.analysis_results[stock]
-                    display_manager.display_stock_result(stock, analyzer, results)
+                    display_manager.display_stock_result(stock, analyzer, results, selector.signal_verify_days)
 
             # 새로운 분석 진행
             for idx in range(st.session_state.analysis_index, total_stocks):
@@ -77,12 +77,12 @@ def show_stock_analysis():
                     # display_manager.status_text.text(f"분석 중: {stock_name}")
                     display_manager.update_status(f"분석 중: {stock_name}")
                     analyzer = StockAnalyzer()
-                    analyzer.set_display_option(selection['show_all'], selection['show_recent_only'])
-                    df, results = analyzer.analyze_stock(ticker, selection['start_date'], selection['end_date'])
+                    analyzer.set_display_option(selection['show_all'], selection['show_recent_only'], selection['market_cap_filter'], selection['signal_verify_days'])
+                    df, results = analyzer.analyze_stock(ticker, selection['start_date'], selection['end_date'], selector.market_cap_filter)
 
                     if df is not None and results is not None:
                         st.session_state.analysis_results[selected_stock] = (analyzer, results)
-                        display_manager.display_stock_result(selected_stock, analyzer, results)
+                        display_manager.display_stock_result(selected_stock, analyzer, results, selector.signal_verify_days)
                     else:
                         if selected_stock in display_manager.result_placeholders:
                             display_manager.result_placeholders[selected_stock].empty()
@@ -105,7 +105,7 @@ def show_stock_analysis():
             # 일시정지 상태에서도 이전 결과 표시
             for stock in st.session_state.analysis_results:
                 analyzer, results = st.session_state.analysis_results[stock]
-                display_manager.display_stock_result(stock, analyzer, results)
+                display_manager.display_stock_result(stock, analyzer, results, selector.signal_verify_days)
     else:
         st.warning("분석할 종목을 선택해주세요.")
 
