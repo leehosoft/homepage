@@ -56,18 +56,6 @@ class StockSelector:
                 datetime.now()
             ).strftime("%Y%m%d")
 
-        # # 시장 선택 및 종목 필터링
-        # self.market_filter = st.radio(
-        #     "시장 선택",
-        #     ["전체", "KOSPI", "KOSDAQ"],
-        #     horizontal=True
-        # )
-
-        # all_stocks = self.get_all_stock_codes()
-        # filtered_stocks = [stock for stock in all_stocks if
-        #                  self.market_filter == "전체" or
-        #                  f"[{self.market_filter}]" in stock]
-
         # 분석 옵션 설정
         col1, col2 = st.columns(2)
         with col1:

@@ -118,18 +118,6 @@ class StockDisplay:
     def create_placeholders(self, selected_stocks):
         self.result_placeholders = {stock: st.empty() for stock in selected_stocks}
 
-    # def update_progress(self, current, total):
-    #     progress = (current + 1) / total
-    #     st.session_state.current_progress = progress
-    #     st.session_state.progress_bar.progress(progress)
-    #     st.session_state.progress_text.text(
-    #         f"진행률: {progress*100:.1f}% ({current+1}/{total})"
-    #     )
-
-    # def update_status(self, text):
-    #     st.session_state.current_status_text = text
-    #     st.session_state.status_text.text(text)
-
     def display_stock_result(self, selected_stock, analyzer, results):
         if selected_stock not in self.result_placeholders:
             self.result_placeholders[selected_stock] = st.empty()

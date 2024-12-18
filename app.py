@@ -78,18 +78,12 @@ def show_stock_analysis():
                     display_manager.update_status(f"분석 중: {stock_name}")
                     analyzer = StockAnalyzer()
                     analyzer.set_display_option(selection['show_all'], selection['show_recent_only'])
-                    df = analyzer.get_stock_data(ticker, selection['start_date'], selection['end_date'])
+                    df, results = analyzer.analyze_stock(ticker, selection['start_date'], selection['end_date'])
 
-                    if df is not None:
-                        analyzer.calculate_technical_indicators()
-                        analyzer.generate_signals()
-                        results = analyzer.analyze_performance()
-
-                        if results is not None:
-                            st.session_state.analysis_results[selected_stock] = (analyzer, results)
-                            display_manager.display_stock_result(selected_stock, analyzer, results)
+                    if df is not None and results is not None:
+                        st.session_state.analysis_results[selected_stock] = (analyzer, results)
+                        display_manager.display_stock_result(selected_stock, analyzer, results)
                     else:
-                        error_stocks.append(stock_name)
                         if selected_stock in display_manager.result_placeholders:
                             display_manager.result_placeholders[selected_stock].empty()
 
@@ -100,7 +94,6 @@ def show_stock_analysis():
                     continue
 
                 st.session_state.analysis_index = idx + 1
-                # time.sleep(0.1)
 
             if st.session_state.analysis_index >= total_stocks:
                 st.session_state.analysis_running = False

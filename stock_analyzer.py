@@ -13,19 +13,6 @@ class StockAnalyzer:
         self.show_all = False
         self.show_recent_only = False
 
-        # # 캐시 설정 추가
-        # st.set_page_config(
-        #     page_title="주식 분석 시스템",
-        #     layout="wide",
-        #     initial_sidebar_state="expanded"
-        # )
-
-        # # 세션 상태 초기화
-        # if 'df' not in st.session_state:
-        #     st.session_state.df = None
-        # if 'analysis_results' not in st.session_state:
-        #     st.session_state.analysis_results = {}
-
     def set_display_option(self, show_all, show_recent_only):
         """디스플레이 옵션 설정"""
         self.show_all = show_all
@@ -36,7 +23,6 @@ class StockAnalyzer:
         """주식 데이터 조회 및 전처리"""
         try:
             # OHLCV 데이터 조회
-            # df = stock.get_market_ohlcv_by_date(start_date, end_date, ticker)
             df = stock.get_market_ohlcv_by_date(start_date, end_date, ticker, adjusted=False)
             if df is None or df.empty or len(df) < 40:
                 return None
@@ -115,20 +101,6 @@ class StockAnalyzer:
             self.calculate_technical_indicators()
             self.generate_signals()
             results = self.analyze_performance()
-
-            # if self.show_all or results['전체_매수_시그널'] > 0 or (self.show_recent_only and self.has_recent_signal()):
-            #     return df, results
-            # return None, None
-        
-            #         # 최근 매수 시그널 필터링 로직
-            # if self.show_recent_only:
-            #     if self.has_recent_signal():
-            #         return df, results
-            #     return None, None
-            
-            # # 기존 필터링 로직
-            # if self.show_all or results['전체_매수_시그널'] > 0:
-            #     return df, results
             
             # 최근 매수 시그널 필터링
             if self.show_recent_only:
