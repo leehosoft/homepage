@@ -109,7 +109,9 @@ class StockAnalyzer:
             results = self.analyze_performance()
             capbool = self.filter_by_market_cap(ticker, end_date)
             
-            last_5_avg = df['거래대금'].tail(5).mean()
+            # last_5_avg = df['거래대금'].tail(5).mean()
+            last_5_avg = df['거래대금'].iloc[-6:-1].mean()
+
 
             if not(self.daekum_cap_filter[0] <= last_5_avg <= self.daekum_cap_filter[1]):
                 return None, None

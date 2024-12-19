@@ -1,6 +1,5 @@
 #@title ##**5.stock_display.py**
 # %%writefile stock_display.py
-
 import streamlit as st
 
 class StockDisplay:
@@ -81,6 +80,7 @@ class StockDisplay:
             self.progress_text.text(
                 f"진행률: {progress*100:.1f}% ({current+1}/{total})"
             )
+            
 
     def update_status(self, text):
         if not st.session_state.analysis_paused:
