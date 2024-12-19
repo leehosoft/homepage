@@ -15,6 +15,7 @@ class StockSelector:
         self.selected_stocks = None
         
         self.market_cap_filter = None  # 시가총액 필터 추가
+        self.daekum_cap_filter = None  # 거래대금 필터 추가
         self.signal_verify_days = None  # 매수시그널 검증일수 추가        
 
     def get_all_stock_codes(self):
@@ -61,7 +62,7 @@ class StockSelector:
             ).strftime("%Y%m%d")
             
         # 분석 옵션 설정
-        col1, col2 = st.columns(2)            
+        col1, col2, col3 = st.columns(3)            
         with col1:   
             # 시가총액 필터 추가
             self.market_cap_filter = st.select_slider(
@@ -69,7 +70,15 @@ class StockSelector:
                 options=[0, 1000, 5000, 10000, 50000, 100000, 500000, 100000000],
                 value=(0, 100000000)
             ) 
-        with col2:    
+            
+        with col2:   
+            # 거래대금 필터 추가
+            self.daekum_cap_filter = st.select_slider(
+                "거래대금 필터 (억원)",
+                options=[0, 5, 10, 20, 30, 50, 100, 500, 1000, 1500, 5000, 10000, 100000],
+                value=(0, 100000)
+            )             
+        with col3:    
             # 매수시그널 검증일수 추가
             self.signal_verify_days = st.number_input(
                 "매수시그널 검증일수",
@@ -102,6 +111,7 @@ class StockSelector:
             'show_recent_only': self.show_recent_only,
             'selected_stocks': self.selected_stocks,
             'market_cap_filter': self.market_cap_filter,  # 시가총액 필터 추가
+            'daekum_cap_filter': self.daekum_cap_filter,
             'signal_verify_days': self.signal_verify_days  # 검증일수 추가            
         }
 

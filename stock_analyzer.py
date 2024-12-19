@@ -14,12 +14,14 @@ class StockAnalyzer:
         self.show_recent_only = False
         self.signal_verify_days = 3
         self.market_cap_filter = (0, 100000000) 
+        self.daekum_cap_filter = (0, 1000000) 
 
-    def set_display_option(self, show_all, show_recent_only, market_cap_filter, signal_verify_days):
+    def set_display_option(self, show_all, show_recent_only, market_cap_filter, signal_verify_days, daekum_cap_filter):
         """디스플레이 옵션 설정"""
         self.show_all = show_all
         self.show_recent_only = show_recent_only
         self.market_cap_filter = market_cap_filter
+        self.daekum_cap_filter = daekum_cap_filter
         self.signal_verify_days = signal_verify_days
 
     # @st.cache_data(ttl=3600)  # 1시간 캐시
@@ -95,7 +97,7 @@ class StockAnalyzer:
         except Exception:
             return False
 
-    def analyze_stock(self, ticker, start_date, end_date, market_cap_filter):
+    def analyze_stock(self, ticker, start_date, end_date):
         """종목 분석 통합 함수"""
         try:
             df = self.get_stock_data(ticker, start_date, end_date)
@@ -105,7 +107,12 @@ class StockAnalyzer:
             self.calculate_technical_indicators()
             self.generate_signals()
             results = self.analyze_performance()
-            capbool = self.filter_by_market_cap(ticker, market_cap_filter, end_date)
+            capbool = self.filter_by_market_cap(ticker, end_date)
+            
+            last_5_avg = df['거래대금'].tail(5).mean()
+
+            if not(self.daekum_cap_filter[0] <= last_5_avg <= self.daekum_cap_filter[1]):
+                return None, None
             
             if(not capbool):
                 return None, None  
@@ -124,7 +131,7 @@ class StockAnalyzer:
             print(f"종목 분석 중 오류 발생: {str(e)}")
             return None, None
         
-    def filter_by_market_cap(self, ticker, market_cap_filter, end_date):
+    def filter_by_market_cap(self, ticker, end_date):
         """시가총액 필터링"""
         try:
             # cap_df = stock.get_market_cap(self.end_date)

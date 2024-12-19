@@ -77,8 +77,8 @@ def show_stock_analysis():
                     # display_manager.status_text.text(f"분석 중: {stock_name}")
                     display_manager.update_status(f"분석 중: {stock_name}")
                     analyzer = StockAnalyzer()
-                    analyzer.set_display_option(selection['show_all'], selection['show_recent_only'], selection['market_cap_filter'], selection['signal_verify_days'])
-                    df, results = analyzer.analyze_stock(ticker, selection['start_date'], selection['end_date'], selector.market_cap_filter)
+                    analyzer.set_display_option(selection['show_all'], selection['show_recent_only'], selection['market_cap_filter'], selection['signal_verify_days'], selection['daekum_cap_filter'])
+                    df, results = analyzer.analyze_stock(ticker, selection['start_date'], selection['end_date'])
 
                     if df is not None and results is not None:
                         st.session_state.analysis_results[selected_stock] = (analyzer, results)
